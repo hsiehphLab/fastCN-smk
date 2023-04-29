@@ -1,6 +1,9 @@
 # change LDFLAGS to suit your needs, for example below is for the eichler lab
 # LDFLAGS=-Wl,-rpath=/net/gs/vol3/software/modules-sw/gcc/8.2.0/Linux/CentOS7/x86_64/lib64
 
+# per PingHsun:
+LDFLAGS=-Wl,-rpath=/panfs/roc/msisoft/gcc/11.3.0/lib64
+
 QuicK-mer2/quicKmer2: fastCN/GC_control_gen
 	git clone https://github.com/KiddLab/QuicK-mer2.git \
 		&& cd QuicK-mer2 \
