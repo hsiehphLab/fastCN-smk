@@ -1,18 +1,9 @@
-reference: "t2t-chm13-v1.1"
-fasta: /net/eichler/vol26/projects/chm13_t2t/nobackups/assemblies/chm13_v1.1_plus38Y.fasta
-sd: /net/eichler/vol26/projects/chm13_t2t/nobackups/fastcn_mitchell/fastCN-smk/config/chm13v1.1_SDs_plus_lowid_SDs.bed
+reference: "t2t-chr22_only"
+fasta: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/chr22.fa
+sd: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/chm13_v2.0.SD_only_chr22.bed
 nchunks: 100
-manifest: config/manifest_20.tbl
+manifest: config/manifest.tbl
 
 #
 # the following files will be made if they are not provided
 #
-RepeatMasker: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/Masked/chm13_v1.1_plus38Y_repeatmasker.out.bed
-trf: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/Masked/chm13_v1.1_plus38Y_trf.bed
-gaps: /net/eichler/vol26/projects/chm13_t2t/nobackups/Assembly_analysis/Masked/chm13_v1.1_plus38Y.Ns.bed
-windowmasker: /net/eichler/vol26/projects/chm13_t2t/nobackups/fastcn_mitchell/fastCN-smk/results/t2t-chm13-v1.1/windowmasker/dust.bed.gz
-# masked_ref: a hard masked reference fasta, but not really necessary if you provide the beds
-# gc_control: the gc control .bin file from fastCN if already made
-# autosome_control:
-# chrX_control:
-# reference_windows:
