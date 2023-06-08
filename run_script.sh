@@ -1,20 +1,39 @@
-#!/usr/bin/env bash
+#!/bin/bash -l
+
+# modified for maintenance window
+# #SBATCH --time=34:00:00
+
+# original:
+#SBATCH --time=96:00:00
+
+#SBATCH --ntasks=1
+#SBATCH --mem=2g
+#SBATCH --tmp=1g
+
+
+conda activate snakemake
+
+
 set -euo pipefail
 
-mkdir -p logs/drmaa
+mkdir -p logs
 
-export PATH=/net/eichler/vol26/7200/software/pipelines/fastCN-smk/bin/:$PATH
+export PATH=$PWD/bin:$PATH
 
 snakemake \
-    --drmaa " -l centos=7 -l h_rt=48:00:00 -l mfree={resources.mem}G -pe serial {threads} -V -cwd -S /bin/bash -w n" \
-    --drmaa-log-dir logs/drmaa \
     --use-conda \
+    -k \
     --configfile config/config.yaml \
-    --local-cores 20 \
-    --cores 20 \
-    --max-inventory-time 10000 \
-    --resources load=1000 \
-    --scheduler greedy \
-    --latency-wait 60 \
-    --restart-times 3 \
+    --jobs 100 \
+    --profile profile \
     "$@"
+
+
+#    --local-cores 100 \
+#    --cores 100 \
+#    --max-inventory-time 10000 \
+#    --resources load=1000 \
+#    --scheduler greedy \
+#    --latency-wait 60 \
+#    --restart-times 1 \
+#    --rerun-incomplete \
