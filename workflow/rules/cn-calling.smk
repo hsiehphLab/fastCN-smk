@@ -4,8 +4,8 @@ rule unpack_mrsfast:
         comp=rules.compress_mrsfast_further.output.comp,
     output:
         exp=pipe("results/{sample}/mapping/{sm}_merged_exp.out.gz"),
-    conda:
-        "../envs/env.yml"
+#    conda:
+#        "../envs/env.yml"
     resources:
         mem=2,
         hrs=24,
@@ -26,8 +26,8 @@ rule GC_correct:
         bin=config.get("gc_control", rules.fastcn_GC_bin.output.bin),
     output:
         binary=pipe("results/{sample}/binary/{sm}.bin"),
-    conda:
-        "../envs/env.yml"
+#    conda:
+#        "../envs/env.yml"
     log:
         "logs/{sample}/binary/{sm}.log",
     resources:
@@ -47,8 +47,8 @@ rule gzip_bin:
         binary=rules.GC_correct.output.binary,
     output:
         zipped="results/{sample}/binary/{sm}.bin.gz",
-    conda:
-        "../envs/env.yml"
+#    conda:
+#        "../envs/env.yml"
     resources:
         mem=8,
         hrs=24,
@@ -57,7 +57,7 @@ rule gzip_bin:
         "logs/{sample}/binary/{sm}.gz.log",
     shell:
         """
-        pigz -p {threads} -c {input.binary} > {output.zipped}
+        module load pigz/2.4 && pigz -p {threads} -c {input.binary} > {output.zipped}
         """
 
 
@@ -68,8 +68,8 @@ rule convert_windows:
         ref_windows=config.get("reference_windows", rules.make_windows.output.bed),
     output:
         windows=temp("temp/{sample}/windows/wssd/{sm}.depth.bed"),
-    conda:
-        "../envs/env.yml"
+#    conda:
+#        "../envs/env.yml"
     log:
         "logs/{sample}/windows/{sm}.log",
     resources:
