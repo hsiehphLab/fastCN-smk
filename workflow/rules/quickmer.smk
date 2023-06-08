@@ -35,7 +35,8 @@ rule generate_ref_file:
     threads: 16
     resources:
         hrs=12,
-        mem=5,
+        mem=50,
+        # mem=5, gave out of memory error
     shell:
         """
         quicKmer2 search -k {params.kmer} -t 20 -s 3G -e 2 -d 100 -w {params.window_size} -c {input.include_bed} {input.ref}
@@ -76,7 +77,7 @@ rule quickmer_count:
     log:
         "logs/{sample}/quickmer/{sm}/count.log",
     resources:
-        mem=12,
+        mem=50,
         hrs=12,
     threads: 8
     shell:
