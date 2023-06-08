@@ -9,3 +9,5 @@ fastCN
 bin
 benchmarks/**
 .crates**
+slurm*.out
+RM_*
