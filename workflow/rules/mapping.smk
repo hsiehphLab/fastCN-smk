@@ -147,8 +147,8 @@ rule compress_mrsfast_further:
         sam=rules.merged_mrsfast_bam.output.merged,
     output:
         comp="results/{sample}/mapping/{sm}_merged_comp.out.gz",
-    conda:
-        "../envs/env.yml"
+#    conda:
+#        "../envs/env.yml"
     resources:
         mem=2,
         hrs=24,
