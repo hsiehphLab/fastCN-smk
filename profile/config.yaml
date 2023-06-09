@@ -26,7 +26,7 @@ printshellcmds: True
 reason: True
 show-failed-logs: True 
 latency-wait: 60
-#cluster-status: status-sacct.sh
+cluster-status: status-sacct.sh
 use-conda: True
 max-jobs-per-second: 200 
 #rerun-triggers: mtime 
