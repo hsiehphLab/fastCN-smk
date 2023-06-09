@@ -57,6 +57,15 @@ rule mrsfast_index:
         mrsfast --index {input.ref}
         """
 
+# removed these DG June 9, 2023 after 10 to 20 tries at debugging the
+#        conda environment.  Even snakemake was repeatedly crashing
+#        (not just the jobs).  So I just replaced the conda
+#        environment with a build of mrsfast and it just worked.
+
+#        mem=lambda wildcards, attempt, threads: 4 * attempt * threads,
+#    conda:
+#        "../envs/env.yml"
+#        total_mem=lambda wildcards, attempt, threads: 4 * attempt * threads - 2,
 
 rule mrsfast_alignment:
     input:
@@ -65,11 +74,9 @@ rule mrsfast_alignment:
         ref=config.get("masked_ref", rules.masked_reference.output.fasta),
     output:
         sam=temp("temp/mrsfast/{sample}/{sm}/{scatteritem}.sam.gz"),
-    conda:
-        "../envs/env.yml"
     resources:
-        total_mem=lambda wildcards, attempt, threads: 4 * attempt * threads - 2,
-        mem=lambda wildcards, attempt, threads: 4 * attempt * threads,
+        total_mem=50,
+        mem=50,
         hrs=2,
         load=1,
     log:
@@ -80,7 +87,9 @@ rule mrsfast_alignment:
     priority: 20
     shell:
         """
-        extract-from-fastq36.py --in {input.reads} \
+        echo "about to execute: extract-from-fastq36.py --in {input.reads} | mrsfast --search {input.ref} --seq /dev/stdin --disable-nohits --mem {resources.total_mem} --threads {threads} -e 2 --outcomp -o $(dirname {output.sam})/{wildcards.scatteritem} > {log} 2>&1"
+
+        export PATH=/home/hsiehph/shared/software/packages/mrsfast/sfu-compbio-mrsfast-cf8e678:$PATH && extract-from-fastq36.py --in {input.reads} \
             | mrsfast --search {input.ref} --seq /dev/stdin \
                 --disable-nohits --mem {resources.total_mem} --threads {threads} \
                 -e 2 --outcomp \
