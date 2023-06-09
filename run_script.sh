@@ -20,12 +20,16 @@ mkdir -p logs
 
 export PATH=$PWD/bin:$PATH
 
+
+
 snakemake \
     --use-conda \
     -k \
     --configfile config/config.yaml \
     --jobs 100 \
     --profile profile \
+    --latency-wait 60 \
+    --restart-times 1 \
     "$@"
 
 
