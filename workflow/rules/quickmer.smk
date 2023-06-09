@@ -94,17 +94,20 @@ rule quickmer_est:
     output:
         bed=temp("temp/{sample}/windows/sunk/{sm}.depth.bed.CN.bed"),
         png="temp/{sample}/sunk/{sm}/{sm}.qm2.png",
-    conda:
-        "../envs/env.yml"
+#    conda:
+#        "../envs/env.yml"
     log:
         "logs/{sample}/quickmer/{sm}/est.log",
     resources:
         mem=25,
         hrs=4,
     threads: 1
+	# was just:  quicKmer2 est {input.ref} $( echo {input.qm2_bin} | sed 's/.bin//' ) {output.bed}
+	# but gave error module 'numpy' has no attribute 'float'.  
+	# so conda environment was not adequate
     shell:
         """
-        quicKmer2 est {input.ref} $( echo {input.qm2_bin} | sed 's/.bin//' ) {output.bed}
+        module load python3/3.8.3_anaconda2020.07_mamba && quicKmer2 est {input.ref} $( echo {input.qm2_bin} | sed 's/.bin//' ) {output.bed}
         """
 
 
