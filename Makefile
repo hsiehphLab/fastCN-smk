@@ -21,8 +21,8 @@ fastCN/GC_control_gen:
 		&& g++ ${LDFLAGS} -o GC_control_gen GC_control_gen.cc \
 		&& g++ ${LDFLAGS} -o SAM_GC_correction SAM_GC_correction.cc \
 		&& cd .. \
-		&& ln -s fastCN bin \
-		&& cargo install rustybam --root .
+		&& ln -s fastCN bin
+
 
 
 
