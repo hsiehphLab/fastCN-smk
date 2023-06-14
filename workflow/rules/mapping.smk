@@ -110,7 +110,7 @@ rule mrsfast_sort:
     benchmark:
         "benchmarks/{sample}/sort_bam/{sm}/{scatteritem}.tbl"
     resources:
-        mem=4,
+        mem=10,
         hrs=24,
         load=1,
     threads: 2
