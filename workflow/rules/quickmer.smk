@@ -34,7 +34,7 @@ rule generate_ref_file:
         window_size=config.get("quickmer_window_size", "1000"),
     threads: 16
     resources:
-        hrs=12,
+        hrs=95,
         mem=50,
         # mem=5, gave out of memory error
     shell:
