@@ -5,6 +5,8 @@ import os
 import sys
 
 
+# was mem=2 but was not sufficient, DG June 21, 2023
+
 rule split_reads:
     input:
         reads=lambda wc: config["reads"][wc.sm],
@@ -13,7 +15,7 @@ rule split_reads:
     conda:
         "../envs/env.yml"
     resources:
-        mem=2,
+        mem=10,
         hrs=8,
         load=100,  # seeting a high load here so that only a few can run at once
     params:
