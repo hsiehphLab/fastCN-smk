@@ -6,16 +6,18 @@ import sys
 
 
 # was mem=2 but was not sufficient, DG June 21, 2023
+# then was mem=10 but was not sufficient, DG June 26, 2023
 
 rule split_reads:
     input:
         reads=lambda wc: config["reads"][wc.sm],
     output:
         reads=temp(scatter.split("temp/reads/{{sm}}/{scatteritem}.fq.gz")),
-    conda:
-        "../envs/env.yml"
+# removed DG, June 26, 2023 because of thread error
+#    conda:
+#        "../envs/env.yml"
     resources:
-        mem=10,
+        mem=20,
         hrs=8,
         load=100,  # seeting a high load here so that only a few can run at once
     params:
@@ -29,6 +31,8 @@ rule split_reads:
     priority: 10
     shell:
         """
+        module load seqtk/1.3-r119-dirty
+        module load rustybam/0.1.31
         if [[ {input.reads} =~ \.(fasta|fasta.gz|fa|fa.gz|fastq|fastq.gz|fq|fq.gz)$ ]]; then 
             cat {input.reads} \
                 | seqtk seq -F '#' \
