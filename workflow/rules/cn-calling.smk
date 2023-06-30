@@ -19,6 +19,20 @@ rule unpack_mrsfast:
         "../scripts/unpack_partial_sam.py"
 
 
+# added       module load python/(below) because otherwise got numpy
+# error:  
+#   File                                                                                                     
+#   "/panfs/jay/groups/7/hsiehph/gordo893/samples/mel-sr-cohort1/samples3b/fastcn/fastCN/smooth_GC_mrsfast.p\
+# y", line 35, in <module>                                                                                   
+#     x1 = numpy.array(x[100:301], numpy.float)                                                              
+#                                  ^^^^^^^^^^^                                                               
+#   File                                                                                                     
+#   "/home/hsiehph/shared/conda_shared/envs/snakemake/lib/python3.11/site-packages/numpy/__init__            
+# .py", line 305, in __getattr__                                                                             
+#     raise AttributeError(__former_attrs__[attr])                                                           
+# AttributeError: module 'numpy' has no attribute 'float'.                                                   
+  
+
 rule GC_correct:
     input:
         exp=rules.unpack_mrsfast.output.exp,
@@ -36,7 +50,7 @@ rule GC_correct:
     threads: 1
     shell:
         """
-        SAM_GC_correction \
+        module load python/3.6.3 && SAM_GC_correction \
                 {input.fai} {input.bin} {input.exp} \
                 $(dirname {output.binary})/{wildcards.sm}
         """
