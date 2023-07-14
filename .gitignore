@@ -11,3 +11,6 @@ benchmarks/**
 .crates**
 slurm*.out
 RM_*
+config/config.yaml
+config/manifest.tbl
+QuicK-mer2
