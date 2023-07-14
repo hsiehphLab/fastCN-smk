@@ -32,16 +32,19 @@ rule split_reads:
     shell:
         """
         module load seqtk/1.3-r119-dirty
-        module load rustybam/0.1.31
+        export PATH=/home/hsiehph/shared/software/packages/seqkit:$PATH
+        module load samtools/1.9
         if [[ {input.reads} =~ \.(fasta|fasta.gz|fa|fa.gz|fastq|fastq.gz|fq|fq.gz)$ ]]; then 
             cat {input.reads} \
                 | seqtk seq -F '#' \
-                | rustybam fastq-split {output.reads} 
+                |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
         elif [[ {input.reads} =~ \.(bam|cram|sam|sam.gz)$ ]]; then 
             samtools fasta -@ {threads} {input.reads} \
                 | seqtk seq -F '#' \
-                | rustybam fastq-split {output.reads} 
+                |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
         fi 
+        cd temp/reads/{wildcards.sm}
+        rename_files.py
         """
 
 
