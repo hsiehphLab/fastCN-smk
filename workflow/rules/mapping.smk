@@ -44,7 +44,7 @@ rule split_reads:
                 |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
         fi 
         cd temp/reads/{wildcards.sm}
-        rename_files.py
+        {params.sdir}/scripts/rename_files.py
         """
 
 
