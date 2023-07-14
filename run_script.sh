@@ -7,7 +7,7 @@
 #SBATCH --time=96:00:00
 
 #SBATCH --ntasks=1
-#SBATCH --mem=2g
+#SBATCH --mem=50g
 #SBATCH --tmp=1g
 
 
@@ -29,7 +29,7 @@ snakemake \
     --jobs 100 \
     --profile profile \
     --latency-wait 60 \
-    --restart-times 1 \
+    --restart-times 3 \
     "$@"
 
 
