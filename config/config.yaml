@@ -3,7 +3,17 @@ fasta: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/chr22.
 sd: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/chm13_v2.0.SD_only_chr22.bed
 nchunks: 100
 manifest: config/manifest.tbl
-
 #
 # the following files will be made if they are not provided
 #
+masked_ref: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}.masked.fasta
+gc_control: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}.bin
+reference_windows: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}.windows.bed
+autosome_control: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}_auto_control.bed
+chrX_control: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}_chrX_control.bed
+include_bed: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/t2t-chr22_only.include.bed
+# added (DG), July 19, 2023
+fasta_qm: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/t2t-chr22_only.fasta.qm
+fasta_qgc: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/t2t-chr22_only.fasta.qgc
+fasta_bed: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/t2t-chr22_only.fasta.bed
+
