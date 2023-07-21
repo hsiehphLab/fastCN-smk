@@ -6,7 +6,7 @@ rule bed_to_bed9:
     log:
         "logs/{sample}/windows/{sm}.{type}.bed9.log",
     conda:
-        "../envs/env.yml"
+        "fastcn"
     resources:
         mem=8,
         hrs=24,
@@ -23,7 +23,7 @@ rule make_bb:
         bed=temp("temp/{sample}/tracks/{type}/{sm}.bed"),
         bigbed="results/{sample}/tracks/{type}/bigbed/{sm}_{type}.bb",
     conda:
-        "../envs/env.yml"
+        "fastcn"
     resources:
         mem=2,
         hrs=24,
@@ -52,7 +52,7 @@ rule make_trackdb:
         genomes="results/{sample}/tracks/{type}/genomes.txt",
         html="results/{sample}/tracks/{type}/bigbed/description.html",
     conda:
-        "../envs/env.yml"
+        "fastcn"
     threads: 1
     resources:
         mem=2,
@@ -79,7 +79,7 @@ rule wssd_binary:
     params:
         sdir=SDIR,
     conda:
-        "../envs/env.yml"
+        "fastcn"
     log:
         "logs/{sample}/wssd/{sm}_binary.log",
     resources:

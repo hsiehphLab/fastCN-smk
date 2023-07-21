@@ -26,7 +26,7 @@ rule generate_ref_file:
         qgc="results/{sample}/{sample}.fasta.qgc",
         qm="results/{sample}/{sample}.fasta.qm",
     conda:
-        "../envs/env.yml"
+        "fastcn"
     log:
         "logs/{sample}/quickmer/search.log",
     params:
@@ -51,7 +51,7 @@ rule index_ref:
     log:
         "logs/{sample}/quickmer/fai.log",
     conda:
-        "../envs/env.yml"
+        "fastcn"
     resources:
         mem=12,
         hrs=2,
@@ -73,7 +73,7 @@ rule quickmer_count:
         qm2="temp/{sample}/sunk/{sm}/{sm}.qm2.txt",
         qm2_bin="temp/{sample}/sunk/{sm}/{sm}.qm2.bin",
     conda:
-        "../envs/env.yml"
+        "fastcn"
     log:
         "logs/{sample}/quickmer/{sm}/count.log",
     resources:
@@ -109,7 +109,7 @@ rule quickmer_est:
         bed=temp("temp/{sample}/windows/sunk/{sm}.depth.bed.CN.bed"),
         png="temp/{sample}/sunk/{sm}/{sm}.qm2.png",
 #    conda:
-#        "../envs/env.yml"
+#        "fastcn"
     log:
         "logs/{sample}/quickmer/{sm}/est.log",
     resources:
@@ -132,7 +132,7 @@ rule quickmer_browser:
     output:
         browser_file = temp("temp/{sample}/windows/quickmer2/{sm}.depth.bed.CN.bed")
     conda:
-        "../envs/env.yml"
+        "fastcn"
     log:
         "logs/{sample}/quickmer/{sm}/bed.log"
     resources:

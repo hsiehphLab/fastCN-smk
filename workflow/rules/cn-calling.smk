@@ -5,7 +5,7 @@ rule unpack_mrsfast:
     output:
         exp=pipe("results/{sample}/mapping/{sm}_merged_exp.out.gz"),
 #    conda:
-#        "../envs/env.yml"
+#        "fastcn"
     resources:
         mem=2,
         hrs=24,
@@ -41,7 +41,7 @@ rule GC_correct:
     output:
         binary=pipe("results/{sample}/binary/{sm}.bin"),
 #    conda:
-#        "../envs/env.yml"
+#        "fastcn"
     log:
         "logs/{sample}/binary/{sm}.log",
     resources:
@@ -62,7 +62,7 @@ rule gzip_bin:
     output:
         zipped="results/{sample}/binary/{sm}.bin.gz",
 #    conda:
-#        "../envs/env.yml"
+#        "fastcn"
     resources:
         mem=8,
         hrs=24,
@@ -83,7 +83,7 @@ rule convert_windows:
     output:
         windows=temp("temp/{sample}/windows/wssd/{sm}.depth.bed"),
 #    conda:
-#        "../envs/env.yml"
+#        "fastcn"
     log:
         "logs/{sample}/windows/{sm}.log",
     resources:
@@ -114,7 +114,7 @@ rule copy_number_call:
     log:
         "logs/{sample}/windows/{sm}.cn.log",
     conda:
-        "../envs/env.yml"
+        "fastcn"
     resources:
         mem=16,
         hrs=24,

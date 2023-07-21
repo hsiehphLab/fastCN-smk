@@ -15,7 +15,7 @@ rule split_reads:
         reads=temp(scatter.split("temp/reads/{{sm}}/{scatteritem}.fq.gz")),
 # removed DG, June 26, 2023 because of thread error
 #    conda:
-#        "../envs/env.yml"
+#        "fastcn"
     resources:
         mem=20,
         hrs=8,
@@ -54,7 +54,7 @@ rule mrsfast_index:
     output:
         index=config.get("masked_ref", rules.masked_reference.output.fasta) + ".index",
     conda:
-        "../envs/env.yml"
+        "fastcn"
     log:
         "logs/mrsfast/index.{sample}.log",
     resources:
@@ -73,7 +73,7 @@ rule mrsfast_index:
 
 #        mem=lambda wildcards, attempt, threads: 4 * attempt * threads,
 #    conda:
-#        "../envs/env.yml"
+#        "fastcn"
 #        total_mem=lambda wildcards, attempt, threads: 4 * attempt * threads - 2,
 
 rule mrsfast_alignment:
@@ -113,7 +113,7 @@ rule mrsfast_sort:
     output:
         bam=temp("temp/mrsfast/{sample}/{sm}/{scatteritem}.bam"),
     conda:
-        "../envs/env.yml"
+        "fastcn"
     log:
         "logs/{sample}/mrsfast/sort/{sm}/{scatteritem}_sort.log",
     benchmark:
@@ -140,7 +140,7 @@ rule merged_mrsfast_bam:
     output:
         merged=temp("results/{sample}/mapping/{sm}_merged.out.gz"),
     conda:
-        "../envs/env.yml"
+        "fastcn"
     resources:
         mem=4,
         hrs=24,
@@ -166,7 +166,7 @@ rule compress_mrsfast_further:
     output:
         comp="results/{sample}/mapping/{sm}_merged_comp.out.gz",
 #    conda:
-#        "../envs/env.yml"
+#        "fastcn"
     resources:
         mem=2,
         hrs=24,
