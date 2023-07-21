@@ -83,6 +83,20 @@ rule quickmer_count:
     shell:
         """
         mkdir -p $(dirname {output.qm2})
+        # added DG, July 21, 2023
+        if [ ! -f "results/{wildcards.sample}/{wildcards.sample}.fasta.qm" ]; then
+             echo "linking "{input.ref_qm}" to "results/{wildcards.sample}/{wildcards.sample}.fasta.qm 
+             ln -s {input.ref_qm} results/{wildcards.sample}/{wildcards.sample}.fasta.qm 
+        fi
+        if [ ! -f "results/{wildcards.sample}/{wildcards.sample}.fasta.qgc" ]; then
+             echo "linking "{input.ref_qgc}" to "results/{wildcards.sample}/{wildcards.sample}.fasta.qgc 
+             ln -s {input.ref_qgc} results/{wildcards.sample}/{wildcards.sample}.fasta.qgc 
+        fi
+        if [ ! -f "results/{wildcards.sample}/{wildcards.sample}.fasta.bed" ]; then
+             echo "linking "{input.ref_bed}" to "results/{wildcards.sample}/{wildcards.sample}.fasta.bed
+             ln -s {input.ref_bed} results/{wildcards.sample}/{wildcards.sample}.fasta.bed
+        fi
+        # end added by DG
         zcat {input.fastq} | seqtk seq -A -U -l 60 - | quicKmer2 count -t {threads} {input.ref} /dev/stdin $( echo {output.qm2_bin} | sed 's/.bin//' )
         """
 
