@@ -10,7 +10,7 @@
 #SBATCH --mem=50g
 #SBATCH --tmp=1g
 
-
+source /home/hsiehph/shared/bin/initialize_conda.sh
 conda activate snakemake
 
 
