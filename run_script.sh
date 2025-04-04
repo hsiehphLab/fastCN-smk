@@ -1,7 +1,7 @@
 #!/bin/bash -l
 
 # modified for maintenance window
-# #SBATCH --time=34:00:00
+# #SBATCH --time=24:00:00
 
 # original:
 #SBATCH --time=96:00:00
@@ -10,7 +10,7 @@
 #SBATCH --mem=50g
 #SBATCH --tmp=1g
 
-source /home/hsiehph/shared/bin/initialize_conda.sh
+source /projects/standard/hsiehph/shared/bin/initialize_conda.sh
 conda activate snakemake
 
 
