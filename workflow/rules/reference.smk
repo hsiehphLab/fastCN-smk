@@ -7,7 +7,7 @@ wildcard_constraints:
 
 module Rhodonite:
     snakefile:
-        "/home/hsiehph/shared/software/pipelines/Rhodonite/workflow/Snakefile"
+        "/projects/standard/hsiehph/shared/software/pipelines/Rhodonite/workflow/Snakefile"
     config:
         mask_config
 
