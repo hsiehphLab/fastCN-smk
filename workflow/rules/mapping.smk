@@ -31,15 +31,18 @@ rule split_reads:
     priority: 10
     shell:
         """
-        module load seqtk/1.3-r119-dirty
-        export PATH=/home/hsiehph/shared/software/packages/seqkit:$PATH
+        export PATH=/projects/standard/hsiehph/shared/software/packages/seqkit:$PATH
         module load samtools/1.9
+        # debugging
+        parsePATH.py
+        type -a seqtk
+        # end debugging
         if [[ {input.reads} =~ \.(fasta|fasta.gz|fa|fa.gz|fastq|fastq.gz|fq|fq.gz)$ ]]; then 
-            cat {input.reads} \
+            module load seqtk/1.3-r119-dirty && cat {input.reads} \
                 | seqtk seq -F '#' \
                 |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
         elif [[ {input.reads} =~ \.(bam|cram|sam|sam.gz)$ ]]; then 
-            samtools fasta -@ {threads} {input.reads} \
+            module load seqtk/1.3-r119-dirty && samtools fasta -@ {threads} {input.reads} \
                 | seqtk seq -F '#' \
                 |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
         fi 
@@ -98,7 +101,7 @@ rule mrsfast_alignment:
         """
         echo "about to execute: extract-from-fastq36.py --in {input.reads} | mrsfast --search {input.ref} --seq /dev/stdin --disable-nohits --mem {resources.total_mem} --threads {threads} -e 2 --outcomp -o $(dirname {output.sam})/{wildcards.scatteritem} > {log} 2>&1"
 
-        export PATH=/home/hsiehph/shared/software/packages/mrsfast/sfu-compbio-mrsfast-cf8e678:$PATH && extract-from-fastq36.py --in {input.reads} \
+        export PATH=/projects/standard/hsiehph/shared/software/packages/mrsfast/sfu-compbio-mrsfast-cf8e678:$PATH && extract-from-fastq36.py --in {input.reads} \
             | mrsfast --search {input.ref} --seq /dev/stdin \
                 --disable-nohits --mem {resources.total_mem} --threads {threads} \
                 -e 2 --outcomp \
