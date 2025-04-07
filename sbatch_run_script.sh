@@ -1,1 +1,1 @@
-sbatch --partition=agsmall run_script.sh
+sbatch --partition=sioux,msismall run_script.sh

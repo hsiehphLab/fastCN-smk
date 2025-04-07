@@ -6,7 +6,7 @@ cluster:
   mkdir -p logs/{rule} &&
   sbatch
     --account=hsiehph
-    --partition=agsmall,aglarge
+    --partition=sioux,msismall,msilarge
     --nodes=1
     --ntasks-per-node=1
     --cpus-per-task={threads}
