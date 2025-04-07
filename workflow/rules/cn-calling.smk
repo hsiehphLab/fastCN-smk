@@ -87,7 +87,7 @@ rule convert_windows:
     log:
         "logs/{sample}/windows/{sm}.log",
     resources:
-        mem=16,
+        mem=32,
         hrs=24,
     threads: 1
     shell:
