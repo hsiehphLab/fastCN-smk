@@ -33,16 +33,16 @@ rule split_reads:
         """
         export PATH=/projects/standard/hsiehph/shared/software/packages/seqkit:$PATH
         module load samtools/1.9
-        # debugging
-        parsePATH.py
-        type -a seqtk
-        # end debugging
         if [[ {input.reads} =~ \.(fasta|fasta.gz|fa|fa.gz|fastq|fastq.gz|fq|fq.gz)$ ]]; then 
-            module load seqtk/1.3-r119-dirty && cat {input.reads} \
+            # some debugging
+            echo "path A"
+            module load seqtk/1.3-r119-dirty && parsePATH.py && type -a seqtk && cat {input.reads} \
                 | seqtk seq -F '#' \
                 |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
         elif [[ {input.reads} =~ \.(bam|cram|sam|sam.gz)$ ]]; then 
-            module load seqtk/1.3-r119-dirty && samtools fasta -@ {threads} {input.reads} \
+            # some debugging
+            echo "path B"
+            module load seqtk/1.3-r119-dirty && parsePATH.py && type -a seqtk && samtools fasta -@ {threads} {input.reads} \
                 | seqtk seq -F '#' \
                 |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
         fi 
