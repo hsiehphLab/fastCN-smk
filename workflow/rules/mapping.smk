@@ -5,19 +5,19 @@ import os
 import sys
 
 
-# was mem=2 but was not sufficient, DG June 21, 2023
-# then was mem=10 but was not sufficient, DG June 26, 2023
+scattergather:
+    split=config.get("nchunks", 10),
+
 
 rule split_reads:
     input:
         reads=lambda wc: config["reads"][wc.sm],
     output:
         reads=temp(scatter.split("temp/reads/{{sm}}/{scatteritem}.fq.gz")),
-# removed DG, June 26, 2023 because of thread error
-#    conda:
-#        "fastcn"
+    conda:
+        "../envs/env.yml"
     resources:
-        mem=20,
+        mem=2,
         hrs=8,
         load=100,  # seeting a high load here so that only a few can run at once
     params:
@@ -31,23 +31,15 @@ rule split_reads:
     priority: 10
     shell:
         """
-        export PATH=/projects/standard/hsiehph/shared/software/packages/seqkit:$PATH
-        module load samtools/1.9
         if [[ {input.reads} =~ \.(fasta|fasta.gz|fa|fa.gz|fastq|fastq.gz|fq|fq.gz)$ ]]; then 
-            # some debugging
-            echo "path A"
-            module load seqtk/1.3-r119-dirty && parsePATH.py && type -a seqtk && cat {input.reads} \
+            module load rustybam/0.1.31 && cat {input.reads} \
                 | seqtk seq -F '#' \
-                |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
+                | rustybam fastq-split {output.reads} 
         elif [[ {input.reads} =~ \.(bam|cram|sam|sam.gz)$ ]]; then 
-            # some debugging
-            echo "path B"
-            module load seqtk/1.3-r119-dirty && parsePATH.py && type -a seqtk && samtools fasta -@ {threads} {input.reads} \
+            module load rustybam/0.1.31 && samtools fasta -@ {threads} {input.reads} \
                 | seqtk seq -F '#' \
-                |  seqkit split2  --by-part 100 --out-dir temp/reads/{wildcards.sm} -e .gz      
+                | rustybam fastq-split {output.reads} 
         fi 
-        cd temp/reads/{wildcards.sm}
-        {params.sdir}/scripts/rename_files.py
         """
 
 
@@ -57,7 +49,7 @@ rule mrsfast_index:
     output:
         index=config.get("masked_ref", rules.masked_reference.output.fasta) + ".index",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     log:
         "logs/mrsfast/index.{sample}.log",
     resources:
@@ -69,15 +61,6 @@ rule mrsfast_index:
         mrsfast --index {input.ref}
         """
 
-# removed these DG June 9, 2023 after 10 to 20 tries at debugging the
-#        conda environment.  Even snakemake was repeatedly crashing
-#        (not just the jobs).  So I just replaced the conda
-#        environment with a build of mrsfast and it just worked.
-
-#        mem=lambda wildcards, attempt, threads: 4 * attempt * threads,
-#    conda:
-#        "fastcn"
-#        total_mem=lambda wildcards, attempt, threads: 4 * attempt * threads - 2,
 
 rule mrsfast_alignment:
     input:
@@ -86,7 +69,11 @@ rule mrsfast_alignment:
         ref=config.get("masked_ref", rules.masked_reference.output.fasta),
     output:
         sam=temp("temp/mrsfast/{sample}/{sm}/{scatteritem}.sam.gz"),
+    conda:
+        "../envs/env.yml"
     resources:
+        #total_mem=lambda wildcards, attempt, threads: 4 * attempt * threads - 2,
+        #mem=lambda wildcards, attempt, threads: 4 * attempt * threads,
         total_mem=50,
         mem=50,
         hrs=2,
@@ -99,8 +86,6 @@ rule mrsfast_alignment:
     priority: 20
     shell:
         """
-        echo "about to execute: extract-from-fastq36.py --in {input.reads} | mrsfast --search {input.ref} --seq /dev/stdin --disable-nohits --mem {resources.total_mem} --threads {threads} -e 2 --outcomp -o $(dirname {output.sam})/{wildcards.scatteritem} > {log} 2>&1"
-
         export PATH=/projects/standard/hsiehph/shared/software/packages/mrsfast/sfu-compbio-mrsfast-cf8e678:$PATH && extract-from-fastq36.py --in {input.reads} \
             | mrsfast --search {input.ref} --seq /dev/stdin \
                 --disable-nohits --mem {resources.total_mem} --threads {threads} \
@@ -116,13 +101,13 @@ rule mrsfast_sort:
     output:
         bam=temp("temp/mrsfast/{sample}/{sm}/{scatteritem}.bam"),
     conda:
-        "fastcn"
+        "../envs/env.yml"
     log:
         "logs/{sample}/mrsfast/sort/{sm}/{scatteritem}_sort.log",
     benchmark:
         "benchmarks/{sample}/sort_bam/{sm}/{scatteritem}.tbl"
     resources:
-        mem=10,
+        mem=4,
         hrs=24,
         load=1,
     threads: 2
@@ -141,9 +126,9 @@ rule merged_mrsfast_bam:
     input:
         bams=gather.split("temp/mrsfast/{{sample}}/{{sm}}/{scatteritem}.bam"),
     output:
-        merged=temp("results/{sample}/mapping/{sm}_merged.out.gz"),
+        merged="results/{sample}/mapping/{sm}_merged.out.gz",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     resources:
         mem=4,
         hrs=24,
@@ -168,8 +153,8 @@ rule compress_mrsfast_further:
         sam=rules.merged_mrsfast_bam.output.merged,
     output:
         comp="results/{sample}/mapping/{sm}_merged_comp.out.gz",
-#    conda:
-#        "fastcn"
+    # conda:
+    #     "../envs/env.yml"
     resources:
         mem=2,
         hrs=24,
