@@ -4,8 +4,8 @@ rule unpack_mrsfast:
         comp=rules.compress_mrsfast_further.output.comp,
     output:
         exp=pipe("results/{sample}/mapping/{sm}_merged_exp.out.gz"),
-#    conda:
-#        "fastcn"
+    # conda:
+    #     "../envs/env.yml"
     resources:
         mem=2,
         hrs=24,
@@ -19,20 +19,6 @@ rule unpack_mrsfast:
         "../scripts/unpack_partial_sam.py"
 
 
-# added       module load python/(below) because otherwise got numpy
-# error:  
-#   File                                                                                                     
-#   "/panfs/jay/groups/7/hsiehph/gordo893/samples/mel-sr-cohort1/samples3b/fastcn/fastCN/smooth_GC_mrsfast.p\
-# y", line 35, in <module>                                                                                   
-#     x1 = numpy.array(x[100:301], numpy.float)                                                              
-#                                  ^^^^^^^^^^^                                                               
-#   File                                                                                                     
-#   "/home/hsiehph/shared/conda_shared/envs/snakemake/lib/python3.11/site-packages/numpy/__init__            
-# .py", line 305, in __getattr__                                                                             
-#     raise AttributeError(__former_attrs__[attr])                                                           
-# AttributeError: module 'numpy' has no attribute 'float'.                                                   
-  
-
 rule GC_correct:
     input:
         exp=rules.unpack_mrsfast.output.exp,
@@ -40,8 +26,8 @@ rule GC_correct:
         bin=config.get("gc_control", rules.fastcn_GC_bin.output.bin),
     output:
         binary=pipe("results/{sample}/binary/{sm}.bin"),
-#    conda:
-#        "fastcn"
+    # conda:
+    #     "../envs/env.yml"
     log:
         "logs/{sample}/binary/{sm}.log",
     resources:
@@ -50,7 +36,7 @@ rule GC_correct:
     threads: 1
     shell:
         """
-        module load python/3.6.3 && SAM_GC_correction \
+        SAM_GC_correction \
                 {input.fai} {input.bin} {input.exp} \
                 $(dirname {output.binary})/{wildcards.sm}
         """
@@ -61,8 +47,8 @@ rule gzip_bin:
         binary=rules.GC_correct.output.binary,
     output:
         zipped="results/{sample}/binary/{sm}.bin.gz",
-#    conda:
-#        "fastcn"
+    # conda:
+    #     "../envs/env.yml"
     resources:
         mem=8,
         hrs=24,
@@ -71,7 +57,7 @@ rule gzip_bin:
         "logs/{sample}/binary/{sm}.gz.log",
     shell:
         """
-        module load pigz/2.4 && pigz -p {threads} -c {input.binary} > {output.zipped}
+        pigz -p {threads} -c {input.binary} > {output.zipped}
         """
 
 
@@ -81,13 +67,14 @@ rule convert_windows:
         binary=rules.gzip_bin.output.zipped,
         ref_windows=config.get("reference_windows", rules.make_windows.output.bed),
     output:
-        windows=temp("temp/{sample}/windows/wssd/{sm}.depth.bed"),
-#    conda:
-#        "fastcn"
+        windows=temp("temp/{sample}/windows/{sm}.depth.bed"),
+    conda:
+        "../envs/env.yml"
     log:
         "logs/{sample}/windows/{sm}.log",
     resources:
         mem=32,
+        #mem=16, was not sufficient, DG 5/12/2025
         hrs=24,
     threads: 1
     shell:
@@ -110,11 +97,11 @@ rule copy_number_call:
             "chrX_control", rules.chrX_control_windows.output.bed
         ),
     output:
-        cn_bed=temp("temp/{sample}/windows/wssd/{sm}.depth.bed.CN.bed"),
+        cn_bed=temp("temp/{sample}/windows/{sm}.depth.bed.CN.bed"),
     log:
         "logs/{sample}/windows/{sm}.cn.log",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     resources:
         mem=16,
         hrs=24,
@@ -123,3 +110,44 @@ rule copy_number_call:
         """
         depth-to-cn.py --in {input.windows} --autocontrol {input.control_bed} --chrX {input.chrX_control_bed}
         """
+
+
+rule bed_to_bed9:
+    input:
+        cn_bed=rules.copy_number_call.output.cn_bed,
+    output:
+        bed9="results/{sample}/tracks/bed9/{sm}.bed.gz",
+    log:
+        "logs/{sample}/windows/{sm}.bed9.log",
+    # conda:
+    #     "../envs/env.yml"
+    resources:
+        mem=4,
+        hrs=24,
+    threads: 1
+    script:
+        "../scripts/make_bed9.py"
+
+
+'''
+rule wssd_binary:
+    input:
+        bed=rules.copy_number_call.output.cn_bed,
+        sat_bed=SAT_BED,
+        gap_bed=GAP_BED,
+        cen_bed=CEN_BED,
+    output:
+        wssd_bin="bed/{sample}_wssd_binary.bed",
+        sat_bed=temp("bed/{sample}_wssd_sat.bed"),
+        temp_sat=temp("bed/{sample}_wssd_sat.bed.tmp"),
+    resources:
+        mem=2,
+        hrs=24,
+    threads: 1
+    shell:
+        """
+        bedtools coverage -a {input.bed} -b {input.sat_bed} | cut -f 1-5,8 > {output.temp_sat}
+        {SNAKEMAKE_DIR}/utils/wssd_binary.py -b {output.temp_sat} -o {output.sat_bed}
+        bedtools subtract -a {output.sat_bed} -b {input.gap_bed} | bedtools subtract -a - -b {input.cen_bed} > {output.wssd_bin}
+        """
+'''
