@@ -1,19 +1,5 @@
-reference: "t2t-chr22_only"
-fasta: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/chr22.fa
-sd: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/chm13_v2.0.SD_only_chr22.bed
+reference: "hg38"
+fasta: /projects/standard/hsiehph/shared/hsiehph_shared/assemblies/hg38/no_alt/fastcn/hg38.no_alt_umasked.fa
+sd: /projects/standard/hsiehph/shared/hsiehph_shared/assemblies/hg38/no_alt/fastcn/hg38.no_alt_SDs_plus_lowid_SDs.bed
 nchunks: 100
-manifest: config/manifest.tbl
-#
-# the following files will be made if they are not provided
-#
-masked_ref: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}.masked.fasta
-gc_control: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}.bin
-reference_windows: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}.windows.bed
-autosome_control: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}_auto_control.bed
-chrX_control: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/{sample}_chrX_control.bed
-include_bed: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/t2t-chr22_only.include.bed
-# added (DG), July 19, 2023
-fasta_qm: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/t2t-chr22_only.fasta.qm
-fasta_qgc: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/t2t-chr22_only.fasta.qgc
-fasta_bed: /panfs/jay/groups/7/hsiehph/gordo893/pipelines/fastcn/tiny_dataset/t2t-chr22_only.fasta.bed
-
+manifest: /projects/standard/hsiehph/gordo893/pipelines/fastcn/mitchells_github_hg38/config/manifest.tbl
