@@ -7,7 +7,8 @@ wildcard_constraints:
 
 module Rhodonite:
     snakefile:
-        "/projects/standard/hsiehph/shared/software/pipelines/Rhodonite/workflow/Snakefile"
+#        "https://raw.githubusercontent.com/mrvollger/Rhodonite/v0.6-alpha/workflow/Snakefile"
+        "/projects/standard/hsiehph/shared/software/pipelines/Rhodonite2/Rhodonite/workflow/Snakefile"
     config:
         mask_config
 
@@ -30,7 +31,7 @@ rule mask_file:
     log:
         "logs/{sample}/{sample}.mask.log",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     resources:
         mem=6,
         hrs=24,
@@ -54,7 +55,7 @@ rule exclude_file:
     output:
         bed="results/{sample}/{sample}.exclude.bed",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     log:
         "logs/{sample}/{sample}.exclude.log",
     params:
@@ -74,28 +75,6 @@ rule exclude_file:
         """
 
 
-rule include_file:
-    input:
-        exclude=rules.exclude_file.output.bed,
-        fai=f'{config["fasta"]}.fai',
-    output:
-        include="results/{sample}/{sample}.include.bed",
-    conda:
-        "fastcn"
-    log:
-        "logs/{sample}/{sample}.include.log",
-    resources:
-        mem=6,
-        hrs=24,
-    shell:
-        """
-        bedtools complement \
-            -i {input.exclude} \
-            -g {input.fai} \
-            > {output.include}
-        """
-
-
 rule fastcn_GC_bin:
     input:
         mask=rules.mask_file.output.bed,
@@ -107,7 +86,7 @@ rule fastcn_GC_bin:
     log:
         "logs/{sample}.GC_mask.log",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     params:
         window=400,
     resources:
@@ -134,7 +113,7 @@ rule masked_reference:
         fasta="results/{sample}/{sample}.masked.fasta",
         fai="results/{sample}/{sample}.masked.fasta.fai",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     log:
         "logs/{sample}/mask_reference.log",
     resources:
@@ -177,7 +156,7 @@ rule autosome_control_windows:
     output:
         bed="results/{sample}/{sample}_auto_control.bed",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     log:
         "logs/{sample}/{sample}.auto_control.log",
     resources:
@@ -209,7 +188,7 @@ rule chrX_control_windows:
     log:
         "logs/{sample}/{sample}.chr_control.log",
     conda:
-        "fastcn"
+        "../envs/env.yml"
     threads: 1
     shell:
         """
